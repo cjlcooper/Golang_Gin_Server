@@ -24,6 +24,7 @@ func CreateRouter() {
     // Test
     router.GET("/test/get_test",GetTest)
     router.POST("/test/post_test",PostTest)
+    router.POST("/test/insert_test",InsertTest)
     // Listen Server
     //http.ListenAndServe(":8080",router)
     router.Run(":8080")
@@ -36,7 +37,7 @@ func Middleware(c *gin.Context) {
 
 // Init Database
 func InitDatabase() {
-    db, err := sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/test?charset=utf8")
+    db, err := sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/mysql?charset=utf8")
     defer db.Close()
     if err != nil {
         fmt.Println(err)
@@ -70,4 +71,18 @@ func PostTest(c *gin.Context) {
     return
 }
 
+func InsertTest(c *gin.Context) {
+    userName := c.Request.FormValue("userName")
+    password := c.Request.FormValue("password")
 
+    db, err := sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/TEST?charset=utf8")
+    defer db.Close()
+
+    rs, err := db.Exec("INSERT INTO test(user_name, pass_word) VALUES (?,?)",userName,password)
+    if err != nil{
+        fmt.Println(err)
+    }
+
+    fmt.Println(rs) 
+
+}   
