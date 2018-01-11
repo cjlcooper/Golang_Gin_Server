@@ -8,6 +8,13 @@ import (
   _ "github.com/go-sql-driver/mysql"
 )
 
+var db *sql.DB
+
+type User struct {
+    UserName        string `json:"user_name" form:"user_name"` 
+    Password        string `json:"user_name" form:"pass_word"`
+}
+
 func main() {
     fmt.Println("Start Server ...")
     InitDatabase()
@@ -36,7 +43,8 @@ func Middleware(c *gin.Context) {
 }
 
 // Init Database
-func InitDatabase() {
+func InitDatabase() { 
+    var err error
     db, err := sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/mysql?charset=utf8")
     defer db.Close()
     if err != nil {
@@ -74,8 +82,9 @@ func PostTest(c *gin.Context) {
 func InsertTest(c *gin.Context) {
     userName := c.Request.FormValue("userName")
     password := c.Request.FormValue("password")
-
-    db, err := sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/TEST?charset=utf8")
+    
+    var err error
+    db, err = sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/TEST?charset=utf8")
     defer db.Close()
 
     rs, err := db.Exec("INSERT INTO test(user_name, pass_word) VALUES (?,?)",userName,password)
@@ -83,6 +92,15 @@ func InsertTest(c *gin.Context) {
         fmt.Println(err)
     }
 
-    fmt.Println(rs) 
+    id, err := rs.LastInsertId()
+    if err != nil {
+        fmt.Println(err)
+        fmt.Println(id)
+    }
 
-}   
+    c.JSON(http.StatusOK, gin.H{
+        "msg":"success",
+    })
+}
+
+
