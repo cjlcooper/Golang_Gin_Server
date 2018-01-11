@@ -11,8 +11,8 @@ import (
 var db *sql.DB
 
 type User struct {
-    UserName        string `json:"user_name" form:"user_name"` 
-    Password        string `json:"user_name" form:"pass_word"`
+    UserName        string `json:"user_name" form:"user_name"`
+    Password        string `json:"pass_word" form:"pass_word"`
 }
 
 func main() {
@@ -45,8 +45,8 @@ func Middleware(c *gin.Context) {
 // Init Database
 func InitDatabase() { 
     var err error
-    db, err := sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/mysql?charset=utf8")
-    defer db.Close()
+    db, err = sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/TEST?charset=utf8")
+    //defer db.Close()
     if err != nil {
         fmt.Println(err)
     }
@@ -79,10 +79,25 @@ func PostTest(c *gin.Context) {
     return
 }
 
+//User func
+func (user *User) AddUser() {
+    rs, err := db.Exec("INSERT INTO test(user_name, pass_word) VALUES (?,?)",user.UserName,user.Password)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Println(rs)
+    return
+}
+
 func InsertTest(c *gin.Context) {
     userName := c.Request.FormValue("userName")
     password := c.Request.FormValue("password")
-    
+   
+    user := User{UserName:userName, Password:password}
+     
+    user.AddUser()
+    return
     var err error
     db, err = sql.Open("mysql", "root:cjl1992@tcp(127.0.0.1:3306)/TEST?charset=utf8")
     defer db.Close()
