@@ -20,3 +20,14 @@ func (user *User) AddUser() {
     return
 }
 
+func (user *User) GetAllUser() {
+    rs, err := db.SqlDB.Exec("select * from test")
+    defer rs.Close()
+
+    if err != nil {
+        fmt.Println(err)
+    }
+
+
+}
+

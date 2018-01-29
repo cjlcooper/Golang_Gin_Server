@@ -2,9 +2,7 @@ package Apis
 
 import (
     "net/http"
-    //"log"
     "fmt"
-    //"strconv"
     . "../Modles"
     "github.com/gin-gonic/gin"
 )
@@ -32,6 +30,7 @@ func PostTest(c *gin.Context) {
     return
 }
 
+//Insert User Data
 func InsertTest(c *gin.Context) {
     userName := c.Request.FormValue("userName")
     password := c.Request.FormValue("password")
@@ -43,4 +42,9 @@ func InsertTest(c *gin.Context) {
         "msg":"success",
     })
     return
+}
+
+//Get User Data
+func GetUserData(c *gin.Context) {
+
 }
